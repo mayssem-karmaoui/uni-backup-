@@ -15,7 +15,7 @@ jobs:
  #first job is build
   build:
     #specifies the runner envrt 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     #steps to be executed in this job 
     steps:
