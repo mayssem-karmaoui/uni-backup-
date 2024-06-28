@@ -12,6 +12,11 @@ jobs:
   build:
     runs-on: self-hosted
 
+    services:
+      docker:
+        image: docker:20.10.9-dind
+        options: --privileged  # Required to use Docker inside Docker
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
