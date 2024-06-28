@@ -40,7 +40,12 @@ jobs:
         run: echo "::set-output name=tag::$(git tag --points-at ${{ github.sha }})"
 
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag maayyssem/landing-page:${{ steps.git-tag.outputs.tag }}
+        run: |
+          TAG=${{ steps.git-tag.outputs.tag }}
+          if [ -z "$TAG" ]; then
+            TAG=$(echo "${{ github.sha }}" | cut -c1-8)
+          fi
+          docker build . --file Dockerfile --tag maayyssem/landing-page:$TAG
 
       - name: Push Docker image to Docker Hub
         if: steps.git-tag.outputs.tag != ''
