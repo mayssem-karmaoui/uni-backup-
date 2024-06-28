@@ -45,7 +45,7 @@ jobs:
           if [ -z "$TAG" ]; then
             TAG=$(echo "${{ github.sha }}" | cut -c1-8)
           fi
-          docker build . --file Dockerfile --tag maayyssem/edit:$TAG
+          docker build . --file Dockerfile --tag maayyssem/landing-page:$TAG
       - name: Push Docker image to Docker Hub
         if: steps.git-tag.outputs.tag != ''
-        run: docker push maayyssem/edit:${{ steps.git-tag.outputs.tag }}
+        run: docker push maayysseem/landing-page:${{ steps.git-tag.outputs.tag }}
