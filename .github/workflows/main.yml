@@ -71,13 +71,8 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         
-    - name: Check Git Status
-      id: check_git_status
+ 
+    - name: Push to Backup Repository
       run: |
-        if [[ -n $(git status -s) ]]; then
-          echo "Changes detected, syncing with backup repository"
-          git remote add backup git@github.com:mayssem-karmaoui/uni-backup-.git
-          git push backup main
-        else
-          echo "No changes detected, skipping sync with backup repository"
-        fi
+        git clone --mirror git@github.com:mayssem-karmaoui/uni-backup-.git
+        
