@@ -60,3 +60,13 @@ jobs:
         context: .
         push: ${{ steps.get_tag.outputs.push }}
         tags: maayysseem/landing-page:${{ steps.get_tag.outputs.tag }}
+        
+    - name: Set up Git
+      run: |
+        git config --global user.name "maayysseem"
+        git config --global user.email "karmaouimayssem@gmail.com"
+
+    - name: Push to Backup Repository
+      run: |
+        git remote add backup git@github.com:mayssem-karmaoui/uni-backup-.git
+        git push backup main
