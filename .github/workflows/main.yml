@@ -66,6 +66,11 @@ jobs:
         git config --global user.name "maayysseem"
         git config --global user.email "karmaouimayssem@gmail.com"
 
+    - name: Add SSH key
+      uses: webfactory/ssh-agent@v0.5.4
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
     - name: Push to Backup Repository
       run: |
         git remote add backup git@github.com:mayssem-karmaoui/uni-backup-.git
