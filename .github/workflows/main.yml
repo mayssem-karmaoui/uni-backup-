@@ -1,9 +1,9 @@
-name: CI/CD Pipeline
+name: CI/CD Pipe
 
 on:
   push:
-    branches:
-      - main
+    tags: 
+      - '*'
 
 jobs:
   build-and-push:
@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch all history including tags
     
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -26,18 +28,18 @@ jobs:
 
     - name: Get commit SHA
       id: get_sha
-      run: echo "::set-output name=sha::$(git rev-parse --short=8 HEAD)"
+      run: echo "::set-output name=sha::$(git rev-parse --short=8 $GITHUB_SHA)"
 
     - name: Determine tag
       id: get_tag
       run: |
         TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
         if [ -z "$TAG" ]; then
-          echo "no tags found"
+          echo "No tags found, using commit SHA"
           TAG=${{ steps.get_sha.outputs.sha }}
           PUSH=false
         else
-          echo "tag found: $TAG"
+          echo "Tag found: $TAG"
           PUSH=true
         fi
         echo "::set-output name=tag::$TAG"
@@ -56,4 +58,3 @@ jobs:
         context: .
         push: ${{ steps.get_tag.outputs.push }}
         tags: maayysseem/landing-page:${{ steps.get_tag.outputs.tag }}
-
