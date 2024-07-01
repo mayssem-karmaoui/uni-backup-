@@ -74,5 +74,5 @@ jobs:
  
     - name: Push to Backup Repository
       run: |
-        git remote add backup git@github.com:mayssem-karmaoui/uni-backup-.git
-        git push backup main 
+        git clone --mirror git@github.com:mayssem-karmaoui/uni-backup-.git
+        
