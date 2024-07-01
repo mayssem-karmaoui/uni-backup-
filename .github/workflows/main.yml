@@ -71,7 +71,7 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         
-   - name: Check Git Status
+    - name: Check Git Status
       id: check_git_status
       run: |
         git fetch origin main
