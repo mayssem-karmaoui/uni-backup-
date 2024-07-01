@@ -2,7 +2,9 @@ name: CI/CD Pipe
 
 on:
   push:
-    tags: 
+    branches:
+      - main
+    tags:
       - '*'
 
 jobs:
