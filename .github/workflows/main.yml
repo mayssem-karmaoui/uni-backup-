@@ -12,42 +12,27 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+    - name: Install dependencies
+      run: npm install
 
-    - name: Extract commit tags
-      id: get_commit_tags
-      run: |
-        TAG=$(git tag --contains HEAD)
-        if [ -z "$TAG" ]; then
-          echo "tagged=false" >> $GITHUB_ENV
-          COMMIT_HASH=$(git rev-parse --short=8 HEAD)
-          echo "::set-output name=tag::${COMMIT_HASH}"
-        else
-          echo "tagged=true" >> $GITHUB_ENV
-          echo "::set-output name=tag::${TAG}"
-        fi
+    - name: Build
+      run: npm run build
 
     - name: Log in to Docker Hub
-      if: env.tagged == 'true'
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PAT }}
-
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@v4
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
       with:
-        images: maayysseem/landing-page
-        tags: |
-          type=raw,value=${{ steps.get_commit_tags.outputs.tag }}
-
-    - name: Build Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        push: ${{ env.tagged == 'true' }}
+        context: DockerFile/
+        push: true
+        tags: maayysseem/landing-page
