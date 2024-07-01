@@ -33,6 +33,6 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
-        context: DockerFile/
+        context: .
         push: true
         tags: maayysseem/landing-page
