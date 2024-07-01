@@ -70,8 +70,14 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.4
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    - name: Push to Backup Repository
+        
+    - name: Check Git Status
+      id: check_git_status
       run: |
-        git remote add backup git@github.com:mayssem-karmaoui/uni-backup-.git
-        git push backup main
+        if [[ -n $(git status -s) ]]; then
+          echo "Changes detected, syncing with backup repository"
+          git remote add backup git@github.com:mayssem-karmaoui/uni-backup-.git
+          git push backup main
+        else
+          echo "No changes detected, skipping sync with backup repository"
+        fi
