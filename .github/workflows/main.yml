@@ -70,9 +70,10 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.4
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-        
- 
-    - name: Push to Backup Repository
+
+    - name: synchronize with the backup 
       run: |
-        git clone --mirror git@github.com:mayssem-karmaoui/uni-backup-.git
+        cd uni-backup- 
+        git remote uni-backup- 
+        
         
