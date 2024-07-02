@@ -74,6 +74,6 @@ jobs:
     - name: synchronize with the backup 
       run: |
         cd uni-backup- 
-        git remote uni-backup- 
+        git remote update uni-backup- 
         
         
