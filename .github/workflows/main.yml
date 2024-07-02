@@ -71,9 +71,18 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: synchronize with the backup 
+    - name: Clone Backup Repository as Mirror
       run: |
-        cd uni-backup- 
-        git remote update uni-backup- 
-        
+        git clone --mirror git@github.com:mayssem-karmaoui/uni-backup-.git backup-mirror.git
+
+    - name: Fetch Latest Changes from Main Repository
+      run: |
+        cd backup-mirror.git
+        git remote add uni-landing-page git@github.com:mayssem-karmaoui/uni-landing-page.git
+        git fetch uni-landing-page
+
+    - name: Push to Backup Repository
+      run: |
+        cd backup-mirror.git
+        git push --mirror git@github.com:mayssem-karmaoui/uni-backup-.git
         
