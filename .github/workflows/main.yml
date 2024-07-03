@@ -129,7 +129,7 @@ jobs:
       run: |
           cd backup-mirror.git
           ls -l 
-          cp /refs ../new-repo/ref
+          cp -r refs ../new-repo
 
     - name: Commit file to new repository
       run: |
