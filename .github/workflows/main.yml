@@ -140,7 +140,6 @@ jobs:
     - name: Push new repository to GitHub
       run: |
         git remote add origin git@github.com:mayssem-karmaoui/runner-repo.git
-        git branch -M main
         git push -u origin main
 
   push-to-docker-hub :
