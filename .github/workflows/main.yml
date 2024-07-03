@@ -139,6 +139,8 @@ jobs:
 
     - name: Push new repository to GitHub
       run: |
+        git remote -v 
+        git remote remove origin
         git remote add origin git@github.com:mayssem-karmaoui/runner-repo.git
         git push -u origin main
 
