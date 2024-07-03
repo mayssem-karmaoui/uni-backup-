@@ -114,10 +114,7 @@ jobs:
         cd backup-mirror.git
         git push --mirror git@github.com:mayssem-karmaoui/uni-backup-.git
     
-  copy-file :
-   needs : synchronize-backup
-   runs-on: ubuntu-latest
-   steps:
+
     - name: Create a new local repository
       run: |
         mkdir new-repo
@@ -126,6 +123,8 @@ jobs:
 
     - name: Copy file to new repository
       run: 
+          cd backup-mirror.git
+          pwd 
           cp backup-mirror.git/yarn.lock new-repo
 
     - name: Commit file to new repository
