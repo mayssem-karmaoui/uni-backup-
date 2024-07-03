@@ -103,6 +103,8 @@ jobs:
       if: success()
       run: |
         #access to my local cloned repo and add the main as a remote repo to fetch changes from it 
+        pwd
+        ls -l
         cd backup-mirror.git
         git remote add uni-landing-page git@github.com:mayssem-karmaoui/uni-landing-page.git
         git fetch uni-landing-page
