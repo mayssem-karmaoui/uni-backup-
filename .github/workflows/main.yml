@@ -127,7 +127,7 @@ jobs:
       run: |
           cd backup-mirror.git
           pwd 
-          cp backup-mirror.git/yarn.lock new-repo
+          cp yarn.lock ../new-repo/yarn-test.lock
 
     - name: Commit file to new repository
       run: |
