@@ -126,7 +126,7 @@ jobs:
 
     - name: Copy file to new repository
       run: |
-          cd backup-mirror.git
+          pwd
           cp -r yarn.lock new-repo
 
     - name: Commit file to new repository
