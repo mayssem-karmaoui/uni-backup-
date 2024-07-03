@@ -32,21 +32,38 @@ jobs:
 
     - name: Get commit SHA
       if: success()
+      
+      #This identifier is used later to refer to the output of this step
       id: get_sha
+
+      #set-output name=sha:: sets an output named sha for this step. 
+      #git rev-parse : parses Git revision identifiers like commit hashes and outputs them in a human-readable form 
+      #--short=8 : show me a short version of the idetifier (8 car)
+      #$GITHUB_SHA  contains the full commit SHA 
       run: echo "::set-output name=sha::$(git rev-parse --short=8 $GITHUB_SHA)"
 
     - name: Determine tag
       if: success()
+      id: get_tag
       run: |
-          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+          #git describe --tags --exact-match: Finds the tag that exactly matches the commit.
+          TAG=$(git describe --tags --exact-match)
+          
+          #-z tests if the string is empty 
           if [ -z "$TAG" ]; then
             echo "No tags found, using commit SHA"
+            #steps.<step-id>.outputs.<result variable>
             TAG=${{ steps.get_sha.outputs.sha }}
+            #sets a flag push to false : flags ae used to specify a state or a condiftion
             PUSH=false
+
+          #ken l9it tag
           else
             echo "Tag found: $TAG"
             PUSH=true
           fi
+
+          #set an output variable for this step names tag tekhou valeur el tag ya empty ya feha tag
           echo "::set-output name=tag::$TAG"
           echo "::set-output name=push::$PUSH"
 
@@ -60,6 +77,7 @@ jobs:
             # If tag exists, use the tag
             docker build -t maayysseem/landing-page:${{ steps.get_tag.outputs.tag }} .
           fi
+          
   synchronize-backup :
    needs : build-image
    runs-on: ubuntu-latest
