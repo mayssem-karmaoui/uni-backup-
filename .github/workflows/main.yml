@@ -125,9 +125,8 @@ jobs:
         git init
 
     - name: Copy file to new repository
-      run: |
-          pwd
-          cp -r yarn.lock new-repo
+      run: 
+          cp backup-mirror.git/yarn.lock new-repo
 
     - name: Commit file to new repository
       run: |
