@@ -106,9 +106,10 @@ jobs:
         pwd
         ls -l
         cd backup-mirror.git
+        ls -l
         git remote add uni-landing-page git@github.com:mayssem-karmaoui/uni-landing-page.git
         git fetch uni-landing-page
-
+        ls -l
     - name: Push to Backup Repository
       if: success()
       run: |
