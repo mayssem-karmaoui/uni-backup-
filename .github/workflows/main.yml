@@ -63,8 +63,8 @@ jobs:
   synchronize-backup :
    needs : build-image
    runs-on: ubuntu-latest
-  
    steps:
+
     - name: Set up Git
       if: success()
       run: |
@@ -76,7 +76,11 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.4
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
+        
+    - name: Clone Backup Repository as Mirror
+      run: |
+        git clone --mirror git@github.com:mayssem-karmaoui/uni-backup-.git backup-mirror.git
+        
     - name: Fetch Latest Changes from Main Repository
       if: success()
       run: |
