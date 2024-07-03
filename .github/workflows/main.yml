@@ -110,6 +110,7 @@ jobs:
         git remote add uni-landing-page git@github.com:mayssem-karmaoui/uni-landing-page.git
         git fetch uni-landing-page
         ls -l
+        
     - name: Push to Backup Repository
       if: success()
       run: |
@@ -127,8 +128,8 @@ jobs:
     - name: Copy file to new repository
       run: |
           cd backup-mirror.git
-          pwd 
-          cp yarn.lock ../new-repo/yarn-test.lock
+          ls -l 
+          cp /refs ../new-repo/ref
 
     - name: Commit file to new repository
       run: |
