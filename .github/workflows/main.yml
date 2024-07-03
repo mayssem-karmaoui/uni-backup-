@@ -119,11 +119,11 @@ jobs:
         mkdir new-repo
         cd new-repo
         git init
-        
+
     - name: Copy file to new repository
       run: |
-        cd backup-mirror.git
-        cp -r backup-mirror.git/src/* new-repo
+          cd backup-mirror.git
+          cp -r src/* ../new-repo/src/
 
     - name: Commit file to new repository
       run: |
