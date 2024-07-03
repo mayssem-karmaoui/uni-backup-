@@ -122,7 +122,7 @@ jobs:
         git init
 
     - name: Copy file to new repository
-      run: 
+      run: |
           cd backup-mirror.git
           pwd 
           cp backup-mirror.git/yarn.lock new-repo
