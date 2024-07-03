@@ -126,13 +126,13 @@ jobs:
         
     - name: Copy file to new repository
       run: |
-        cp -r backup-mirror.git/src/* new-repo/src/
+        cp -r backup-mirror.git/src/* new-repo
 
     - name: Commit file to new repository
       run: |
         cd new-repo
         git add .
-        git commit -m "Add file from uni-landing-page backup"
+        git commit -m "Add file from uni-landing-page backup to local"
 
     - name: Push new repository to GitHub
       run: |
