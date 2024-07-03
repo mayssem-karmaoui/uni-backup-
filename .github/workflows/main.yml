@@ -47,7 +47,7 @@ jobs:
       id: get_tag
       run: |
           #git describe --tags --exact-match: Finds the tag that exactly matches the commit.
-          TAG=$(git describe --tags --exact-match)
+          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
           
           #-z tests if the string is empty 
           if [ -z "$TAG" ]; then
