@@ -67,7 +67,7 @@ jobs:
    needs : build-image
    runs-on: ubuntu-latest
    steps:
-
+   
     - name: Set up Git
       run: |
         git config --global user.name "maayysseem"
@@ -88,12 +88,9 @@ jobs:
       run: |
         #access to my local cloned repo and add the main as a remote repo to fetch changes from it 
         pwd
-        ls -l
         cd backup-mirror.git
-        ls -l
         git remote add uni-landing-page git@github.com:mayssem-karmaoui/uni-landing-page.git
         git fetch uni-landing-page
-        ls -l
         
     - name: Push to Backup Repository
       if: success()
