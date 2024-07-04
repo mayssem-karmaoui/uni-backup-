@@ -31,29 +31,23 @@ jobs:
       run: npm run build
 
     - name: Get commit SHA
-      if: success()
       id: get_sha
       run: echo "::set-output name=sha::$(git rev-parse --short=8 $GITHUB_SHA)"
 
-    - name: Fetch all tags
-      if: success()
-      run: git fetch --tags
-
     - name: Determine tag
-      if: success()
       id: get_tag
       run: |
-          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
-          if [ -z "$TAG" ]; then
-            echo "No tags found, using commit SHA"
-            TAG=${{ steps.get_sha.outputs.sha }}
-            PUSH=false
-          else
-            echo "Tag found: $TAG"
-            PUSH=true
-          fi
-          echo "::set-output name=tag::$TAG"
-          echo "::set-output name=push::$PUSH"
+        TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+        if [ -z "$TAG" ]; then
+          echo "No tags found, using commit SHA"
+          TAG=${{ steps.get_sha.outputs.sha }}
+          PUSH=false
+        else
+          echo "Tag found: $TAG"
+          PUSH=true
+        fi
+        echo "::set-output name=tag::$TAG"
+        echo "::set-output name=push::$PUSH"
 
     - name: Build Docker image
       if: success()
