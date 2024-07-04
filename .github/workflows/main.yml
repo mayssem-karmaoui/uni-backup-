@@ -49,27 +49,20 @@ jobs:
         echo "::set-output name=tag::$TAG"
         echo "::set-output name=push::$PUSH"
 
+    - name: Log in to Docker Hub
+      if: steps.get_tag.outputs.push == 'true'
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
     - name: Build Docker image
-      if: success()
-      run: |
-          if [ "${{ steps.get_tag.outputs.tag }}" == "" ]; then
-            docker build -t maayysseem/landing-page:${{ steps.get_sha.outputs.sha }} .
-          else
-            docker build -t maayysseem/landing-page:${{ steps.get_tag.outputs.tag }} .
-          fi
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: ${{ steps.get_tag.outputs.push }}
+        tags: maayysseem/landing-page:${{ steps.get_tag.outputs.tag }}
 
-
-    - name: Build Docker image
-      if: success()
-      run: |
-          if [ "${{ steps.get_tag.outputs.tag }}" == "" ]; then
-            # If no tag, use commit SHA
-            docker build -t maayysseem/landing-page:${{ steps.get_sha.outputs.sha }} .
-          else
-            # If tag exists, use the tag
-            docker build -t maayysseem/landing-page:${{ steps.get_tag.outputs.tag }} .
-          fi
-          
   synchronize-backup :
    needs : build-image
    runs-on: ubuntu-latest
@@ -109,25 +102,7 @@ jobs:
         cd backup-mirror.git
         git push --mirror git@github.com:mayssem-karmaoui/uni-backup-.git
     
-  push-to-docker-hub :
-    needs: build-image 
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Log in to Docker Hub
-        if: ${{ needs.build-image.outputs.push == 'true' }}
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - name: Push Docker image
-        if: ${{ needs.build-image.outputs.push == 'true' }}
-        uses: docker/build-push-action@v4
-        with:
-         context: .
-         push: true
-         tags: maayysseem/landing-page:${{ steps.get_tag.outputs.tag }}
+
 
 
 
