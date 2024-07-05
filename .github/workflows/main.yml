@@ -111,6 +111,32 @@ jobs:
       run: |
         cd backup-mirror.git
         git push --mirror git@github.com:mayssem-karmaoui/uni-backup-.git
+   
+    - name: Create a new local repository
+      run: |
+        mkdir new-repo.git
+        cd new-repo.git
+        git init
+        git remote add origin git@github.com:mayssem-karmaoui/runner-repo.git
+        git branch -M main
+
+    - name: Copy file to new repository
+      run: |
+          cd backup-mirror.git
+          ls -l 
+          cp -r refs ../new-repo.git
+
+    - name: Commit file to new repository
+      run: |
+        cd new-repo.git
+        git add .
+        git commit -m "Add file from uni-landing-page backup to local"
+
+    - name: Push new repository to GitHub
+      run: |
+        cd new-repo.git
+        git remote -v 
+        git push -u origin main
 
   push-to-docker-hub :
     needs: build-image 
