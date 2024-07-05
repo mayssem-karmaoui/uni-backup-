@@ -136,7 +136,7 @@ jobs:
       run: |
         cd new-repo.git
         git remote -v 
-        git pull
+        git pull 
         git push -u origin main
 
   push-to-docker-hub :
