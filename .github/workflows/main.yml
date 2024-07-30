@@ -8,7 +8,7 @@ on:
       - '*'
 jobs:
   build-image :
-    runs-on: issat
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
@@ -31,60 +31,44 @@ jobs:
       run: npm run build
 
     - name: Get commit SHA
-      if: success()
-      
-      #This identifier is used later to refer to the output of this step
       id: get_sha
-
-      #set-output name=sha:: sets an output named sha for this step. 
-      #git rev-parse : parses Git revision identifiers like commit hashes and outputs them in a human-readable form 
-      #--short=8 : show me a short version of the idetifier (8 car)
-      #$GITHUB_SHA  contains the full commit SHA 
       run: echo "::set-output name=sha::$(git rev-parse --short=8 $GITHUB_SHA)"
 
     - name: Determine tag
-      if: success()
       id: get_tag
       run: |
-          #git describe --tags --exact-match: Finds the tag that exactly matches the commit.
-          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
-          
-          #-z tests if the string is empty 
-          if [ -z "$TAG" ]; then
-            echo "No tags found, using commit SHA"
-            #steps.<step-id>.outputs.<result variable>
-            TAG=${{ steps.get_sha.outputs.sha }}
-            #sets a flag push to false : flags ae used to specify a state or a condiftion
-            PUSH=false
+        TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
+        if [ -z "$TAG" ]; then
+          echo "No tags found, using commit SHA"
+          TAG=${{ steps.get_sha.outputs.sha }}
+          PUSH=false
+        else
+          echo "Tag found: $TAG"
+          PUSH=true
+        fi
+        echo "::set-output name=tag::$TAG"
+        echo "::set-output name=push::$PUSH"
 
-          #ken l9it tag
-          else
-            echo "Tag found: $TAG"
-            PUSH=true
-          fi
-
-          #set an output variable for this step names tag tekhou valeur el tag ya empty ya feha tag
-          echo "::set-output name=tag::$TAG"
-          echo "::set-output name=push::$PUSH"
-
+    - name: Log in to Docker Hub
+      if: steps.get_tag.outputs.push == 'true'
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
     - name: Build Docker image
-      if: success()
-      run: |
-          if [ "${{ steps.get_tag.outputs.tag }}" == "" ]; then
-            # If no tag, use commit SHA
-            docker build -t maayysseem/landing-page:${{ steps.get_sha.outputs.sha }} .
-          else
-            # If tag exists, use the tag
-            docker build -t maayysseem/landing-page:${{ steps.get_tag.outputs.tag }} .
-          fi
-          
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: ${{ steps.get_tag.outputs.push }}
+        tags: maayysseem/landing-page:${{ steps.get_tag.outputs.tag }}
+
   synchronize-backup :
    needs : build-image
    runs-on: ubuntu-latest
    steps:
-
+   
     - name: Set up Git
-      if: success()
       run: |
         git config --global user.name "maayysseem"
         git config --global user.email "karmaouimayssem@gmail.com"
@@ -97,73 +81,20 @@ jobs:
         
     - name: Clone Backup Repository as Mirror
       run: |
-        git clone --mirror git@github.com:mayssem-karmaoui/uni-backup-.git backup-mirror.git
+        git clone --mirror git@github.com:mayssem-karmaoui/uni-landing-page.git backup-mirror.git
         
     - name: Fetch Latest Changes from Main Repository
       if: success()
       run: |
+        #access to my local cloned repo and add the main as a remote repo to fetch changes from it 
+        pwd
         cd backup-mirror.git
         git remote add uni-landing-page git@github.com:mayssem-karmaoui/uni-landing-page.git
         git fetch uni-landing-page
-
+        
     - name: Push to Backup Repository
       if: success()
       run: |
+        #push changes from myy local to the backup remote repo on git 
         cd backup-mirror.git
         git push --mirror git@github.com:mayssem-karmaoui/uni-backup-.git
-   
-    - name: Create a new local repository
-      run: |
-        mkdir new-repo.git
-        cd new-repo.git
-        git init
-        git remote add origin git@github.com:mayssem-karmaoui/runner-repo.git
-        git branch -M main
-
-    - name: Copy file to new repository
-      run: |
-          cd backup-mirror.git
-          ls -l 
-          cp -r refs ../new-repo.git
-
-    - name: Commit file to new repository
-      run: |
-        cd new-repo.git
-        git add .
-        git commit -m "Add file from uni-landing-page backup to local"
-
-    - name: Push new repository to GitHub
-      run: |
-        cd new-repo.git
-        git remote -v 
-        git pull 
-        git push -u origin main
-
-  push-to-docker-hub :
-    needs: build-image 
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Log in to Docker Hub
-        if: ${{ needs.build-image.outputs.push == 'true' }}
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - name: Push Docker image
-        if: ${{ needs.build-image.outputs.push == 'true' }}
-        uses: docker/build-push-action@v4
-        with:
-         context: .
-         push: true
-         tags: maayysseem/landing-page:${{ steps.get_tag.outputs.tag }}
-
-
-  
-
-
-
-
-
-  
