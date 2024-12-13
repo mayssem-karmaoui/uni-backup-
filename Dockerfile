@@ -1,5 +1,5 @@
 #Setting up a foundation for your container
-#Tells Docker to start from an existing image of Nodejsv14
+#Tells Docker to start from an existing image of Nodejs-v14
 FROM node:14
 
 #Creates and sets the working directory inside the container
